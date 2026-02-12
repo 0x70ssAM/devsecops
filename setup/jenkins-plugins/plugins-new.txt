@@ -1,0 +1,15 @@
+workflow-aggregator
+git
+github
+credentials-binding
+pipeline-stage-view
+docker-workflow
+kubernetes
+sonar
+jacoco
+dependency-check-jenkins-plugin
+performance
+slack
+blueocean-display-url
+configuration-as-code
+job-dsl
