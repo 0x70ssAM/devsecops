@@ -139,8 +139,10 @@ echo "Python version:"
 python3 --version
 
 ########################################
-swapoff -a || true
-sed -i '/swap/d' /etc/fstab || true
+# NOTE: swap is intentionally left ON (see swap prerequisite set up before
+# this script runs) — this host has far less RAM than the platform's
+# intended sizing, so swap is kept as headroom and kubelet is told to
+# tolerate it (failSwapOn: false + Swap in ignore-preflight-errors below).
 
 cat <<EOF >/etc/modules-load.d/k8s.conf
 overlay
@@ -215,10 +217,11 @@ networking:
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 failCgroupV1: false
+failSwapOn: false
 KUBEADM_CFG
 
   kubeadm init --config=/tmp/kubeadm-config.yaml \
-    --ignore-preflight-errors=SystemVerification \
+    --ignore-preflight-errors=SystemVerification,Swap \
     --skip-token-print
   # kubectl wait --for=condition=Ready node --all --timeout=300s
   export KUBECONFIG=/etc/kubernetes/admin.conf
